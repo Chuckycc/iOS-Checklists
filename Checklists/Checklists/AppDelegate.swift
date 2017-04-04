@@ -12,10 +12,13 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    let dataModel = DataModel()
 
-
+    //the application(didFinishLaunchingWithOptions) method, which gets called as soon as the app starts up.
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        let navigationController = window!.rootViewController as! UINavigationController
+        let controller = navigationController.viewControllers[0] as! AllListsViewController
+        controller.dataModel = dataModel
         return true
     }
 
@@ -42,11 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     //用于全局代理，比如APP进程被杀死（terminated）或者悬挂（suspended）
     func saveDate() {
-        let navigationController = window!.rootViewController as! UINavigationController
-        
-        let controller = navigationController.viewControllers[0] as! AllListsViewController
-        
-        controller.saveChecklists()
+        dataModel.saveChecklists()
     }
 
 }
