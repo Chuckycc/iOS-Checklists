@@ -8,12 +8,26 @@
 
 import UIKit
 
-class AllListsViewController: UITableViewController,ListDetailViewControllerDelegate {
+class AllListsViewController: UITableViewController,ListDetailViewControllerDelegate,UINavigationControllerDelegate {
     
     var dataModel:DataModel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    //viewDidAppear() isn’t just called when the app starts up but also every time
+   // the navigation controller slides the main screen back into view.
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        navigationController?.delegate = self
+        let index = UserDefaults.standard.integer(forKey: "ChecklistIndex")
+        if index != -1 {
+            let checklist = dataModel.lists[index]
+            performSegue(withIdentifier: "ShowChecklist", sender: checklist)
+        }
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -40,6 +54,8 @@ class AllListsViewController: UITableViewController,ListDetailViewControllerDele
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //某一个大的list对应一个小的list
+        
+        UserDefaults.standard.set(indexPath.row, forKey: "ChecklistIndex")
         let checklist = dataModel.lists[indexPath.row]
         performSegue(withIdentifier: "ShowChecklist", sender: checklist)
     }
@@ -99,6 +115,13 @@ class AllListsViewController: UITableViewController,ListDetailViewControllerDele
         }
         dismiss(animated: true, completion: nil)
     }
+    
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        if viewController === self {
+            UserDefaults.standard.set(-1, forKey: "ChecklistIndex")
+        }
+    }
+    
     
 
 }
